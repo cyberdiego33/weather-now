@@ -5,57 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>weather now|Greatness</title>
     <link rel="stylesheet" href="output.css" />
+    <script src="script.js" defer></script>
   </head>
   <body class="bg-blue-950 p-6 text-white font-mono">
     <div class="max-w-[500px] mx-auto">
       <!-- top and input  -->
-      <section
-        class="text-center flex flex-col mx-auto max-w-[400px]"
-      >
+      <section class="text-center flex flex-col mx-auto max-w-[400px]">
         <small class="font-semibold">Weather Now</small>
         <h1 class="my-4 text-xl md:text-3xl font-semibold text-wrap">
           How's the sky looking today?
         </h1>
         <div class="w-[350px] mx-auto">
-          <form action="submit" class="flex gap-2">
+          <form class="flex gap-2">
             <input
               type="text"
               class="w-full bg-gray-600 outline-0 border-0 p-2 rounded-md"
               placeholder="Search city"
             />
-            <button type="submit" class="bg-green-300 px-3 rounded-md">enter</button>
+            <button type="submit" class="bg-green-300 px-3 rounded-md">
+              enter
+            </button>
           </form>
+          <div id="noInput" class="text-left">
+            <p class="text-xs text-red-700"></p>
+          </div>
         </div>
       </section>
 
       <!-- display section  -->
       <section class="mt-6">
-        <div class="bg-blue-600 py-10 px-6 flex justify-between items-center rounded-lg">
+        <div
+          class="bg-blue-600 py-10 px-6 flex justify-between items-center rounded-lg"
+        >
           <div>
-            <p class="font-semibold md:text-lg">London, United Kingdom</p>
-            <small class="text-gray-300 text-xs md:text-sm">Tuesday, August 20, 2025</small>
+            <p id="cityCountry" class="font-semibold md:text-lg">
+              London, United Kingdom
+            </p>
+            <small id="dateNow" class="text-gray-300 text-xs md:text-sm"
+              >Tuesday, August 20, 2025</small
+            >
+            <p
+              id="weatherDesc"
+              class="text-gray-100 text-sm font-bold md:text-sm"
+            >
+              Clear sky
+            </p>
           </div>
           <div>
-            <p class="text-4xl font-bold">23</p>
+            <p id="temperature" class="text-4xl font-bold">23</p>
           </div>
         </div>
         <!-- stats divs  -->
         <div class="grid grid-cols-4 gap-3 mt-4">
           <div class="shadow-sm rounded-md p-3 bg-gray-700 md:flex-1">
-            <small class="text-gray-300 text-[8px] sm:text-xs">feels like</small>
-            <p>21</p>
+            <small class="text-gray-300 text-[8px] sm:text-xs"
+              >feels like</small
+            >
+            <p id="feelsLike">21</p>
           </div>
           <div class="shadow rounded-md p-3 bg-gray-700 md:flex-1">
             <small class="text-gray-300 text-[8px] sm:text-xs">Humidity</small>
-            <p>36%</p>
+            <p id="humidity">36%</p>
           </div>
           <div class="shadow-sm rounded-md p-3 bg-gray-700 md:flex-1">
             <small class="text-gray-300 text-[8px] sm:text-xs">Wind</small>
-            <p>9 km/h</p>
+            <p><span id="wind">9</span> km/h</p>
           </div>
           <div class="shadow-sm rounded-md p-3 bg-gray-700 md:flex-1">
-            <small class="text-gray-300 text-[8px] sm:text-xs">Precipitation</small>
-            <p>0 mm</p>
+            <small class="text-gray-300 text-[8px] sm:text-xs"
+              >Precipitation</small
+            >
+            <p><span id="precipitation">0</span> mm</p>
           </div>
         </div>
       </section>
