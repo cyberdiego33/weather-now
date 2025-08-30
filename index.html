@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>weather now|Greatness</title>
     <link rel="stylesheet" href="output.css" />
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <script src="script.js" defer></script>
   </head>
   <body class="bg-blue-950 p-6 text-white font-mono">
@@ -26,8 +27,8 @@
               enter
             </button>
           </form>
-          <div id="noInput" class="text-left">
-            <p class="text-xs text-red-700"></p>
+          <div class="text-left">
+            <p id="errorMessage" class="text-xs text-red-700"></p>
           </div>
         </div>
       </section>
@@ -35,7 +36,8 @@
       <!-- display section  -->
       <section class="mt-6">
         <div
-          class="bg-blue-600 py-10 px-6 flex justify-between items-center rounded-lg"
+          id=""
+          class="illustration bg-blue-600 py-10 px-6 flex justify-between items-center rounded-lg"
         >
           <div>
             <p id="cityCountry" class="font-semibold md:text-lg">
@@ -51,7 +53,8 @@
               Clear sky
             </p>
           </div>
-          <div>
+          <div class="flex items-center gap-3">
+            <span id="emoji"></span>
             <p id="temperature" class="text-4xl font-bold">23</p>
           </div>
         </div>
