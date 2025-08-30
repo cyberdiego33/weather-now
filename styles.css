@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
-/* .illustration {
-  background-image: url("./images/clouds.jpg");
+.illustration {
+  background-image: url("./images/background-sky.jpg");
   background-size: cover;
   background-position: center;
-} */
-
+}

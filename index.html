@@ -12,7 +12,17 @@
     <div class="max-w-[500px] mx-auto">
       <!-- top and input  -->
       <section class="text-center flex flex-col mx-auto max-w-[400px]">
-        <small class="font-semibold">Weather Now</small>
+        <div class="flex gap-3 items-center justify-center">
+          <div class="size-5">
+            <img
+              id="sunny"
+              class="size-full object-cover"
+              src="./images/sunny.png"
+              alt="Weather icon"
+            />
+          </div>
+          <small class="font-semibold">Weather Now</small>
+        </div>
         <h1 class="my-4 text-xl md:text-3xl font-semibold text-wrap">
           How's the sky looking today?
         </h1>
@@ -54,7 +64,15 @@
             </p>
           </div>
           <div class="flex items-center gap-3">
-            <span id="emoji"></span>
+            <div class="size-5">
+              <img
+                id="weather"
+                class="size-full object-cover"
+                src="./images/Atmosphere.png"
+                alt="Weather icon"
+              />
+            </div>
+
             <p id="temperature" class="text-4xl font-bold">23</p>
           </div>
         </div>
@@ -68,13 +86,13 @@
           </div>
           <div class="shadow rounded-md p-3 bg-gray-700 md:flex-1">
             <small class="text-gray-300 text-[8px] sm:text-xs">Humidity</small>
-            <p id="humidity">36%</p>
+            <p><span id="humidity">36</span>%</p>
           </div>
           <div class="shadow-sm rounded-md p-3 bg-gray-700 md:flex-1">
             <small class="text-gray-300 text-[8px] sm:text-xs">Wind</small>
             <p><span id="wind">9</span> km/h</p>
           </div>
-          <div class="shadow-sm rounded-md p-3 bg-gray-700 md:flex-1">
+          <div class="shadow-sm rounded-md p-1 sm:p-3 bg-gray-700 md:flex-1">
             <small class="text-gray-300 text-[8px] sm:text-xs"
               >Precipitation</small
             >

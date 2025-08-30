@@ -2,9 +2,10 @@
 const APIKey = "4d8fb5b93d4af21d66a2948710284366";
 const FormDiv = document.querySelector("form");
 const errorMessage = document.querySelector("#errorMessage");
+const sunny = document.querySelector("#sunny");
 
-// const urlWeatherByLocation = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
-// const urlWeatherByCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
+// const urlWeatherByLocation = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKey}&units=metric`;
+// const urlWeatherByCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}&units=metric`;
 
 // const urlLocationFromBigCity = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,6 +24,11 @@ function getFormattedDate() {
   return new Intl.DateTimeFormat("en-US", options).format(now);
 }
 
+// Spinner
+const spinner = function () {
+  sunny.classList.toggle("animate-spin");
+};
+
 // Destructure Weather Data
 function extractWeatherData(data) {
   const {
@@ -39,7 +45,19 @@ function extractWeatherData(data) {
   } = data;
 
   // prettier-ignore
-  return { description, temp, feels_like, humidity, wind, precipitation, lat, lon, city, country };
+  // return { description, temp, feels_like, humidity, wind, precipitation, lat, lon, city, country };
+  return {
+    description,
+    temp: Math.round(temp),                // round temperature
+    feels_like: Math.round(feels_like),    // round feels-like temp
+    humidity: Math.round(humidity),        // round humidity %
+    wind: Math.round(wind * 3.6),          // convert m/s → km/h and round
+    precipitation: Number(precipitation.toFixed(1)), // keep 1 decimal for rain
+    lat,
+    lon,
+    city,
+    country,
+  };
 }
 
 // Setting desc illustrations
@@ -71,7 +89,7 @@ const getDescription = function (desc) {
       "tornado",
     ],
     Clear: ["clear sky"],
-    Clouds: [
+    Cloud: [
       "few clouds",
       "scattered clouds",
       "broken clouds",
@@ -83,7 +101,6 @@ const getDescription = function (desc) {
 
   for (const [description, groups] of Object.entries(weatherGroups)) {
     if (groups.includes(desc)) {
-      // console.log(description);
       return description;
     }
   }
@@ -92,20 +109,9 @@ const getDescription = function (desc) {
 };
 
 const illustration = function (desc) {
-  const weatherIcons = {
-    Thunderstorm: "⛈️",
-    Drizzle: "🌦️",
-    Rain: "🌧️",
-    Snow: "❄️",
-    Atmosphere: "🌫️",
-    Clear: "☀️",
-    Clouds: "☁️",
-  };
-
   const group = getDescription(desc);
   if (group) {
-    document.querySelector("#emoji").textContent = `${weatherIcons[group]}`;
-    // console.log(weatherIcons[group]);
+    document.querySelector("#weather").src = `./images/${group}.png`;
   }
 };
 
@@ -123,12 +129,12 @@ const getCurrentPosition = function () {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   } else {
-    alert("turn on notification or input");
+    errorMessage.textContent = "Can't detect your location";
   }
 };
 
 const errorCallback = function () {
-  alert("Couldn't fetch current location");
+  errorMessage.textContent = "Can't detect your location";
 };
 
 // 2. Getting city with lan, lon
@@ -136,7 +142,7 @@ const successCallback = function (position) {
   alert("location found");
   const { latitude, longitude } = position.coords;
   console.log(latitude, longitude);
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKey}&units=metric`;
 
   startApp(url);
 };
@@ -144,24 +150,25 @@ const successCallback = function (position) {
 // Get the app started or get input city weather
 const startApp = async function (url) {
   errorMessage.textContent = "";
+  spinner();
   try {
     // Fetch weather and get an array of weather, coords, country
     const getWeatherResponse = await getWeather(url);
     console.log(getWeatherResponse);
     if (!getWeatherResponse) {
       console.log("closed app");
+      spinner();
       return;
     }
 
     // Getting City and Country
     const [lat, lon] = getWeatherResponse.slice(7, 9);
-    console.log(lat, lon);
+    // console.log(lat, lon);
     const bigDataUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
     const getCountryLocation = await GetCountry(bigDataUrl);
     let cityCountry = getCountryLocation;
-    if (!getCountryLocation) {
+    if (!getCountryLocation || cityCountry.length > 20) {
       const [city, country] = getWeatherResponse.slice(-2);
-      console.log(getWeatherResponse);
       // console.log("big data: country not found");
       cityCountry = `${city}, ${country}`;
     }
@@ -169,9 +176,10 @@ const startApp = async function (url) {
 
     // Display UI
     const Properties = [cityCountry, ...getWeatherResponse].slice(0, 8);
-    console.log(Properties);
+    // console.log(Properties);
     selectDivs(Properties);
 
+    spinner();
     return "Successful";
   } catch (error) {
     console.log("Something went wrong", error);
@@ -186,8 +194,6 @@ const getWeather = async function (url) {
     if (!response.ok) throw new Error("bad request");
     const data = await response.json();
     console.log("Weather gotten");
-    // console.log(data);
-    // console.log(data.weather);
 
     const newDate = getFormattedDate();
     const extract = [newDate, ...Object.values(extractWeatherData(data))];
@@ -205,7 +211,6 @@ const GetCountry = async function (url) {
     if (!response.ok) throw new Error("Couldn't get city with lan, lang");
     const data = await response.json();
     const { city, countryName } = data;
-    console.log(city, countryName);
 
     const cityCountry = `${city}, ${countryName}`;
     return cityCountry;
@@ -231,11 +236,8 @@ const selectDivs = function (props) {
   const elemenntsArray = [cityCountry, dateNow, weatherDesc, temperature, feelsLike, humidity, wind, precipitation]
 
   console.log("final result:", props);
-  // console.log(elemenntsArray);
 
   props.forEach((data, index) => {
-    // console.log(index);
-    // console.log(elemenntsArray[index]);
     elemenntsArray[index].textContent = data;
   });
 
@@ -268,11 +270,11 @@ FormDiv.addEventListener("submit", (e) => {
 });
 
 const getCityWeather = async function (city) {
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}&units=metric`;
 
   const restartApp = await startApp(url);
   if (!restartApp) {
-    alert("something went wrong");
+    errorMessage.textContent = "City not found";
   }
 };
 
